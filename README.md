@@ -1,70 +1,69 @@
-# Getting Started with Create React App
+# Golf Scorecard App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A live golf scorecard application that allows multiple users to track scores and comments in real-time.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- Add and remove players
+- Update scores for each hole
+- View front nine and back nine holes separately
+- Automatic sorting of players by score (leaderboard style)
+- Add comments about the round
+- Real-time updates for all users
 
-### `npm start`
+## Setup Instructions
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Running the Application Locally
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. Install dependencies:
+   ```
+   npm install
+   ```
 
-### `npm test`
+2. Start the development server:
+   ```
+   npm start
+   ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Setting Up Firebase for Data Persistence
 
-### `npm run build`
+This app uses Firebase Realtime Database to store scorecard data. To set up your own Firebase project:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Click "Add project"
+3. Enter a project name (e.g., "golf-scorecard-app")
+4. Follow the prompts to create the project
+5. Once the project is created, click on "Web" (</>) to add a web app
+6. Register your app with a nickname (e.g., "golf-scorecard-web")
+7. Copy the Firebase configuration object shown
+8. Open the `src/firebase.js` file in this project
+9. Replace the placeholder configuration with your actual Firebase config values:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```javascript
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+10. In the Firebase Console, go to "Realtime Database" in the left sidebar
+11. Click "Create Database"
+12. Choose a location for your database
+13. Start in test mode for development purposes (you can set up proper security rules later)
 
-### `npm run eject`
+The app will now use your Firebase Realtime Database to store all scorecard data, allowing it to be accessed from any device in real-time.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Security Considerations
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+For a production environment, you should set up proper security rules in Firebase. The current implementation uses the default test mode which allows anyone to read and write to your database.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Technologies Used
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- React
+- Firebase Realtime Database
+- CSS3

@@ -1,0 +1,140 @@
+.scorecard-container {
+  max-width: 100%;
+  margin: 20px 0;
+}
+
+.scorecard-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.scorecard th, .scorecard td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.scorecard th {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+}
+
+.player-name-header {
+  min-width: 120px;
+}
+
+.player-name {
+  font-weight: bold;
+  text-align: left;
+}
+
+.score-input {
+  width: 40px;
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+.score-input:disabled {
+  background-color: #f5f5f5;
+  border-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+.subtotal-header, .total-header {
+  background-color: #378b3c;
+}
+
+.subtotal-score {
+  font-weight: bold;
+  background-color: #f0f0f0;
+}
+
+.total-score {
+  font-weight: bold;
+  background-color: #e6f7e6;
+}
+
+.action-header {
+  width: 50px;
+  background-color: #378b3c;
+}
+
+.action-cell {
+  padding: 5px;
+}
+
+.remove-button {
+  background-color: #ff5252;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.remove-button:hover {
+  background-color: #ff0000;
+}
+
+.current-user-row {
+  background-color: rgba(76, 175, 80, 0.05);
+}
+
+.current-user-row .player-name {
+  color: #4CAF50;
+}
+
+.current-user-row .score-input {
+  border-color: #4CAF50;
+  background-color: white;
+}
+
+.add-player-form {
+  display: flex;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.player-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  max-width: 300px;
+}
+
+.add-button {
+  padding: 10px 15px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.add-button:hover {
+  background-color: #45a049;
+}
+
+.no-players-message {
+  padding: 20px;
+  text-align: center;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+} 
