@@ -1,20 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { database } from './firebase';
-import { ref, onValue, set, push, remove } from 'firebase/database';
+import { ref, onValue, set, push, remove, update } from 'firebase/database';
 import Scorecard from './components/Scorecard';
-import Comments from './components/Comments';
+import CommentSection from './components/CommentSection';
 import UserLogin from './components/UserLogin';
+import TournamentList from './components/TournamentList';
+import TournamentCreate from './components/TournamentCreate';
+import TournamentDetail from './components/TournamentDetail';
 import './App.css';
 
 function App() {
-  // State for players and comments
+  // State for players, comments, and tournaments
   const [players, setPlayers] = useState([]);
   const [comments, setComments] = useState([]);
+  const [tournaments, setTournaments] = useState([]);
   const [loading, setLoading] = useState(true);
+  
   // Current user state
   const [currentUser, setCurrentUser] = useState(
     localStorage.getItem('golfScorecard_currentUser') || ''
   );
+  
+  // Current selected tournament and day
+  const [selectedTournament, setSelectedTournament] = useState(null);
+  const [selectedDay, setSelectedDay] = useState('day1');
+  
+  // UI State
+  const [view, setView] = useState('tournaments'); // tournaments, create-tournament, tournament-detail
   
   // Number of holes for the round
   const numberOfHoles = 18;
@@ -28,10 +40,41 @@ function App() {
     }
   }, [currentUser]);
   
-  // Load data from Firebase on component mount
+  // Load tournaments from Firebase
   useEffect(() => {
-    const playersRef = ref(database, 'players');
-    const commentsRef = ref(database, 'comments');
+    const tournamentsRef = ref(database, 'tournaments');
+    
+    const tournamentsUnsubscribe = onValue(tournamentsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const tournamentsArray = Object.entries(data).map(([key, value]) => ({
+          id: key,
+          ...value
+        }));
+        setTournaments(tournamentsArray);
+      } else {
+        setTournaments([]);
+      }
+      setLoading(false);
+    });
+    
+    return () => {
+      tournamentsUnsubscribe();
+    };
+  }, []);
+  
+  // Load players and comments when a tournament and day is selected
+  useEffect(() => {
+    if (!selectedTournament || !selectedDay) {
+      setPlayers([]);
+      setComments([]);
+      return;
+    }
+    
+    const tournamentId = selectedTournament.id;
+    
+    const playersRef = ref(database, `tournamentData/${tournamentId}/${selectedDay}/players`);
+    const commentsRef = ref(database, `tournamentData/${tournamentId}/${selectedDay}/comments`);
     
     // Listen for players data changes
     const playersUnsubscribe = onValue(playersRef, (snapshot) => {
@@ -59,7 +102,6 @@ function App() {
       } else {
         setPlayers([]);
       }
-      setLoading(false);
     });
     
     // Listen for comments data changes
@@ -84,11 +126,90 @@ function App() {
       playersUnsubscribe();
       commentsUnsubscribe();
     };
-  }, [numberOfHoles]);
+  }, [selectedTournament, selectedDay, numberOfHoles]);
+  
+  // Function to create a new tournament
+  const createTournament = (tournamentData) => {
+    const tournamentsRef = ref(database, 'tournaments');
+    const newTournamentRef = push(tournamentsRef);
+    const tournamentId = newTournamentRef.key;
+    
+    // Create the tournament in the tournaments collection
+    set(newTournamentRef, tournamentData);
+    
+    // Initialize the tournament data structure for each day
+    Object.keys(tournamentData.days).forEach(dayId => {
+      const dayRef = ref(database, `tournamentData/${tournamentId}/${dayId}`);
+      set(dayRef, {
+        players: {},
+        comments: {}
+      });
+    });
+    
+    // Select the newly created tournament and set view to detail
+    setSelectedTournament({
+      id: tournamentId,
+      ...tournamentData
+    });
+    setSelectedDay('day1');
+    setView('tournament-detail');
+  };
+  
+  // Function to delete a tournament
+  const deleteTournament = (tournamentId) => {
+    // Find the tournament to check if the current user is the creator
+    const tournament = tournaments.find(t => t.id === tournamentId);
+    
+    if (!tournament) {
+      console.error('Tournament not found');
+      return;
+    }
+    
+    // Only allow deletion if current user is the creator
+    if (tournament.creator !== currentUser) {
+      console.error('Only the tournament creator can delete this tournament');
+      return;
+    }
+    
+    // Remove the tournament from the tournaments collection
+    const tournamentRef = ref(database, `tournaments/${tournamentId}`);
+    remove(tournamentRef)
+      .then(() => {
+        // Also remove the tournament data
+        const tournamentDataRef = ref(database, `tournamentData/${tournamentId}`);
+        return remove(tournamentDataRef);
+      })
+      .then(() => {
+        // If the deleted tournament was selected, go back to the tournament list
+        if (selectedTournament && selectedTournament.id === tournamentId) {
+          setSelectedTournament(null);
+          setView('tournaments');
+        }
+      })
+      .catch(error => {
+        console.error('Error deleting tournament:', error);
+      });
+  };
+  
+  // Function to select a tournament
+  const selectTournament = (tournament) => {
+    setSelectedTournament(tournament);
+    setSelectedDay('day1'); // Default to first day
+    setView('tournament-detail');
+  };
+  
+  // Function to select a day
+  const selectDay = (dayId) => {
+    setSelectedDay(dayId);
+  };
   
   // Function to add a new player
   const addPlayer = (name) => {
-    const playersRef = ref(database, 'players');
+    if (!selectedTournament || !selectedDay) return;
+    
+    const tournamentId = selectedTournament.id;
+    
+    const playersRef = ref(database, `tournamentData/${tournamentId}/${selectedDay}/players`);
     const newPlayerRef = push(playersRef);
     
     set(newPlayerRef, {
@@ -99,26 +220,38 @@ function App() {
   
   // Function to remove a player
   const removePlayer = (playerId) => {
-    const playerRef = ref(database, `players/${playerId}`);
+    if (!selectedTournament || !selectedDay) return;
+    
+    const tournamentId = selectedTournament.id;
+    
+    const playerRef = ref(database, `tournamentData/${tournamentId}/${selectedDay}/players/${playerId}`);
     remove(playerRef);
   };
   
   // Function to update a player's score for a specific hole
   const updateScore = (playerId, holeIndex, score) => {
+    if (!selectedTournament || !selectedDay) return;
+    
     // Get the current player to update just the scores array
     const player = players.find(p => p.id === playerId);
     if (player) {
       const newScores = [...player.scores];
       newScores[holeIndex] = score;
       
-      const playerScoresRef = ref(database, `players/${playerId}/scores`);
+      const tournamentId = selectedTournament.id;
+      
+      const playerScoresRef = ref(database, `tournamentData/${tournamentId}/${selectedDay}/players/${playerId}/scores`);
       set(playerScoresRef, newScores);
     }
   };
   
   // Function to add a new comment
   const addComment = (comment) => {
-    const commentsRef = ref(database, 'comments');
+    if (!selectedTournament || !selectedDay) return;
+    
+    const tournamentId = selectedTournament.id;
+    
+    const commentsRef = ref(database, `tournamentData/${tournamentId}/${selectedDay}/comments`);
     const newCommentRef = push(commentsRef);
     
     set(newCommentRef, {
@@ -130,7 +263,11 @@ function App() {
   
   // Function to remove a comment
   const removeComment = (commentId) => {
-    const commentRef = ref(database, `comments/${commentId}`);
+    if (!selectedTournament || !selectedDay) return;
+    
+    const tournamentId = selectedTournament.id;
+    
+    const commentRef = ref(database, `tournamentData/${tournamentId}/${selectedDay}/comments/${commentId}`);
     remove(commentRef);
   };
   
@@ -143,49 +280,71 @@ function App() {
     setCurrentUser('');
   };
   
+  const handleBackToTournaments = () => {
+    setSelectedTournament(null);
+    setView('tournaments');
+  };
+  
   if (loading) {
-    return <div className="loading">Loading scorecard data...</div>;
+    return <div className="loading">Loading tournament data...</div>;
+  }
+  
+  // Render login screen if user is not logged in
+  if (!currentUser) {
+    return <UserLogin onLogin={handleUserLogin} />;
   }
   
   return (
     <div className="App">
       <header className="App-header">
-        <h1>The Sieron Invitational</h1>
-        <p className="app-subtitle">All users can see and update this scorecard in real-time</p>
-        {currentUser && (
-          <div className="user-info">
-            Logged in as: <span className="username">{currentUser}</span>
-            <button onClick={handleUserLogout} className="logout-button">Logout</button>
-          </div>
-        )}
+        <h1>Golf Trips</h1>
+        <div className="user-info">
+          Logged in as: <span className="username">{currentUser}</span>
+          <button onClick={handleUserLogout} className="logout-button">Logout</button>
+        </div>
       </header>
       
       <main className="App-main">
-        {!currentUser ? (
-          <UserLogin onLogin={handleUserLogin} />
-        ) : (
-          <>
-            <Scorecard 
-              players={players} 
-              addPlayer={addPlayer}
-              removePlayer={removePlayer}
-              updateScore={updateScore}
-              holes={numberOfHoles}
-              currentUser={currentUser}
-            />
-            
-            <Comments 
-              comments={comments}
-              addComment={addComment}
-              removeComment={removeComment}
-              currentUser={currentUser}
-            />
-          </>
+        {view === 'tournaments' && (
+          <TournamentList 
+            tournaments={tournaments} 
+            onSelectTournament={selectTournament}
+            onCreateTournament={() => setView('create-tournament')}
+            onDeleteTournament={deleteTournament}
+            currentUser={currentUser}
+          />
+        )}
+        
+        {view === 'create-tournament' && (
+          <TournamentCreate 
+            onCreateTournament={createTournament}
+            onCancel={() => setView('tournaments')}
+            currentUser={currentUser}
+          />
+        )}
+        
+        {view === 'tournament-detail' && selectedTournament && (
+          <TournamentDetail
+            tournament={selectedTournament}
+            selectedDay={selectedDay}
+            onSelectDay={selectDay}
+            onBackToTournaments={handleBackToTournaments}
+            players={players}
+            holes={numberOfHoles}
+            onAddPlayer={addPlayer}
+            onRemovePlayer={removePlayer}
+            onScoreChange={updateScore}
+            onAddComment={addComment}
+            onDeleteComment={removeComment}
+            comments={comments}
+            currentUser={currentUser}
+            onDeleteTournament={deleteTournament}
+          />
         )}
       </main>
       
       <footer className="App-footer">
-        <p>&copy; {new Date().getFullYear()} Golf Scorecard App</p>
+        <p>&copy; {new Date().getFullYear()} Golf Tournament Tracker</p>
       </footer>
     </div>
   );

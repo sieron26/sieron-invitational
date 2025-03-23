@@ -1,13 +1,13 @@
 import React from 'react';
 import './Scorecard.css';
 
-const Scorecard = ({ players, addPlayer, removePlayer, updateScore, holes = 18, currentUser }) => {
+const Scorecard = ({ players, onAddPlayer, onRemovePlayer, onScoreChange, holes = 18, currentUser, scorecardTitle = "Golf Scorecard" }) => {
   const [newPlayerName, setNewPlayerName] = React.useState('');
 
   const handleAddPlayer = (e) => {
     e.preventDefault();
     if (newPlayerName.trim()) {
-      addPlayer(newPlayerName.trim());
+      onAddPlayer(newPlayerName.trim());
       setNewPlayerName('');
     }
   };
@@ -51,7 +51,7 @@ const Scorecard = ({ players, addPlayer, removePlayer, updateScore, holes = 18, 
 
   return (
     <div className="scorecard-container">
-      <h2>Golf Scorecard</h2>
+      <h2>{scorecardTitle}</h2>
       
       {!currentUserExists && (
         <form onSubmit={handleAddPlayer} className="add-player-form">
@@ -97,7 +97,7 @@ const Scorecard = ({ players, addPlayer, removePlayer, updateScore, holes = 18, 
                           value={(player.scores && player.scores[hole - 1]) || ''}
                           onChange={(e) => {
                             const value = e.target.value === '' ? null : parseInt(e.target.value);
-                            updateScore(player.id, hole - 1, value);
+                            onScoreChange(player.id, hole - 1, value);
                           }}
                           className="score-input"
                           disabled={!canEdit}
@@ -110,7 +110,7 @@ const Scorecard = ({ players, addPlayer, removePlayer, updateScore, holes = 18, 
                       {canEdit && (
                         <button 
                           className="remove-button" 
-                          onClick={() => removePlayer(player.id)}
+                          onClick={() => onRemovePlayer(player.id)}
                           title="Remove player"
                         >
                           ×
@@ -153,7 +153,7 @@ const Scorecard = ({ players, addPlayer, removePlayer, updateScore, holes = 18, 
                             value={(player.scores && player.scores[hole - 1]) || ''}
                             onChange={(e) => {
                               const value = e.target.value === '' ? null : parseInt(e.target.value);
-                              updateScore(player.id, hole - 1, value);
+                              onScoreChange(player.id, hole - 1, value);
                             }}
                             className="score-input"
                             disabled={!canEdit}

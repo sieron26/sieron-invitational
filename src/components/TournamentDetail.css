@@ -1,0 +1,124 @@
+.tournament-detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.tournament-detail-header {
+  margin-bottom: 30px;
+}
+
+.header-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.back-button {
+  background-color: transparent;
+  color: #4CAF50;
+  border: 1px solid #4CAF50;
+  border-radius: 4px;
+  padding: 8px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.delete-tournament-button-detail {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.delete-tournament-button-detail:hover {
+  background-color: #d32f2f;
+}
+
+.tournament-detail-header h2 {
+  margin: 5px 0 15px 0;
+  color: #333;
+  font-size: 24px;
+}
+
+.tournament-info-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.tournament-location,
+.tournament-dates,
+.tournament-creator {
+  color: #555;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.tournament-location i,
+.tournament-dates i,
+.tournament-creator i {
+  color: #4CAF50;
+}
+
+.user-badge {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.day-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.day-tab {
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.day-tab:hover {
+  background-color: #e0e0e0;
+}
+
+.day-tab.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.day-content {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.no-days-message {
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  color: #555;
+  text-align: center;
+} 
