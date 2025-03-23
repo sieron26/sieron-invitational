@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { database } from './firebase';
-import { ref, onValue, set, push, remove, update } from 'firebase/database';
-import Scorecard from './components/Scorecard';
-import CommentSection from './components/CommentSection';
+import { ref, onValue, set, push, remove } from 'firebase/database';
 import UserLogin from './components/UserLogin';
 import TournamentList from './components/TournamentList';
 import TournamentCreate from './components/TournamentCreate';
