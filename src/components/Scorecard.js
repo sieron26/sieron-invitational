@@ -51,6 +51,8 @@ const Scorecard = ({ players, onAddPlayer, onRemovePlayer, onScoreChange, holes 
 
   return (
     <div className="scorecard-container">
+
+<div class="scorecard-wrapper">
       <h2>{scorecardTitle}</h2>
       
       {!currentUserExists && (
@@ -69,6 +71,7 @@ const Scorecard = ({ players, onAddPlayer, onRemovePlayer, onScoreChange, holes 
 
       {players.length > 0 ? (
         <div className="scorecard">
+
           {/* Front Nine */}
           <table className="scorecard-table">
             <thead>
@@ -173,6 +176,7 @@ const Scorecard = ({ players, onAddPlayer, onRemovePlayer, onScoreChange, holes 
       ) : (
         <p className="no-players-message">No players added yet. Add players to start tracking scores.</p>
       )}
+       </div>
     </div>
   );
 };

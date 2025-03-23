@@ -1,6 +1,101 @@
 .scorecard-container {
   max-width: 100%;
   margin: 20px 0;
+  overflow-x: auto; /* Enables horizontal scrolling */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  padding-bottom: 10px; /* Prevents content cutoff */
+}
+
+/* New wrapper for scrollable content */
+.scorecard-wrapper {
+  min-width: 100%;
+  overflow-x: auto;
+}
+
+.scorecard-table {
+  width: 100%;
+  min-width: 600px; /* Minimum width before scrolling kicks in */
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.scorecard th, .scorecard td {
+  padding: 8px; /* Slightly reduced padding for mobile */
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.scorecard th {
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+  position: sticky; /* Keeps headers visible while scrolling */
+  top: 0;
+}
+
+.player-name-header {
+  min-width: 100px; /* Slightly reduced for mobile */
+}
+
+.player-name {
+  font-weight: bold;
+  text-align: left;
+}
+
+.score-input {
+  width: 35px; /* Slightly smaller for mobile */
+  padding: 4px;
+  text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+}
+
+/* Rest of your existing styles remain the same */
+
+/* Media query for mobile devices */
+@media screen and (max-width: 768px) {
+  .scorecard-table {
+    font-size: 14px; /* Slightly smaller text on mobile */
+  }
+
+  .scorecard th, .scorecard td {
+    padding: 6px;
+  }
+
+  .score-input {
+    width: 30px;
+    padding: 3px;
+  }
+
+  .remove-button {
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+  }
+
+  .player-input {
+    max-width: 200px;
+  }
+
+  .add-button {
+    padding: 8px 12px;
+  }
+}
+
+/* Your existing classes below remain unchanged */
+.score-input:disabled {
+  background-color: #f5f5f5;
+  border-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+/* ... rest of your existing CSS ... */
+
+.scorecard-container {
+  max-width: 100%;
+  margin: 20px 0;
 }
 
 .scorecard-table {
