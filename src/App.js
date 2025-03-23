@@ -295,7 +295,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Golf Trips</h1>
+        <h1>GolfNexus</h1>
         <div className="user-info">
           Logged in as: <span className="username">{currentUser}</span>
           <button onClick={handleUserLogout} className="logout-button">Logout</button>

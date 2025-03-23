@@ -14,7 +14,7 @@ const UserLogin = ({ onLogin }) => {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2>Welcome to The Sieron Invitational</h2>
+        <h2>Welcome to GolfNexus</h2>
         <p className="login-message">Please enter your name to continue</p>
         
         <form onSubmit={handleSubmit} className="login-form">
